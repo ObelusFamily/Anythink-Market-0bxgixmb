@@ -9,6 +9,32 @@ import {
 } from "../../constants/actionTypes";
 import { getItemAndComments } from "./utils/ItemFetcher";
 
+function generateImageFromTitle(title) {
+  let retVal = ''
+  async function postData(url = "", data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      response_format:"url"
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
+  
+  postData("https://api.openai.com/v1/images/generations", { prompt: title,
+  n: 1,
+  size: "256x256"})
+  .then(res => res.json())
+  .then((data) => {
+    retVal = data
+    console.log(data); // JSON data parsed by `data.json()` call
+  }); 
+  return retVal;
+}
+
 const mapStateToProps = (state) => ({
   ...state.item,
   currentUser: state.common.currentUser,
@@ -48,7 +74,7 @@ class Item extends React.Component {
           <div className="row bg-white p-4">
             <div className="col-6">
               <img
-                src={this.props.item.image}
+                src={this.props.item.image || generateImageFromTitle(this.props.item.title)}
                 alt={this.props.item.title}
                 className="item-img"
                 style={{ height: "500px", width: "100%", borderRadius: "6px" }}
