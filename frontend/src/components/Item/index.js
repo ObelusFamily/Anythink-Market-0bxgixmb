@@ -17,6 +17,7 @@ function generateImageFromTitle(title) {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.OPEN_API_KEY}`
       },
       body: JSON.stringify(data), // body data type must match "Content-Type" header
       response_format:"url"
